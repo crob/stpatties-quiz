@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>☘️ St. Patrick's Day Trivia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a4a2e;
+    --green-mid: #2d7a4f;
+    --green-bright: #4caf6f;
+    --gold: #d4a017;
+    --gold-light: #f0c94a;
+    --cream: #fdf6e3;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Lora', serif;
+    background: var(--green-deep);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(76,175,111,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(212,160,23,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(45,122,79,0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .shamrocks-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .shamrock-float {
+    position: absolute;
+    opacity: 0.06;
+    animation: floatUp linear infinite;
+  }
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+    10%  { opacity: 0.06; }
+    90%  { opacity: 0.06; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 720px;
+    padding: 30px 20px 60px;
+  }
+
+  /* HEADER */
+  header { text-align: center; margin-bottom: 32px; animation: fadeDown 0.7s ease both; }
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .header-clover {
+    font-size: 3.2rem;
+    display: block;
+    margin-bottom: 6px;
+    filter: drop-shadow(0 4px 12px rgba(76,175,111,0.5));
+    animation: bobble 3s ease-in-out infinite;
+  }
+  @keyframes bobble {
+    0%,100% { transform: translateY(0)   rotate(-5deg); }
+    50%     { transform: translateY(-8px) rotate(5deg); }
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3rem);
+    color: var(--gold-light);
+    line-height: 1.1;
+    text-shadow: 0 3px 20px rgba(212,160,23,0.4);
+  }
+  h1 span {
+    color: var(--white);
+    display: block;
+    font-size: 0.5em;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: 0.8;
+  }
+
+  /* SCREENS */
+  .screen { display: none; }
+  .screen.active { display: block; animation: screenIn 0.45s cubic-bezier(0.4,0,0.2,1) both; }
+  @keyframes screenIn {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* CARD */
+  .card {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 38px 38px 30px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,160,23,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--green-mid), var(--gold), var(--green-bright));
+  }
+  @media (max-width: 500px) { .card { padding: 26px 20px 22px; } }
+
+  /* START SCREEN */
+  #startScreen { text-align: center; }
+  #startScreen .card { padding: 50px 40px 44px; }
+  .start-intro {
+    font-size: 1rem;
+    color: rgba(26,74,46,0.7);
+    font-style: italic;
+    margin-bottom: 28px;
+    line-height: 1.65;
+  }
+  .meta-chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+  .chip {
+    background: rgba(45,122,79,0.1);
+    border: 1px solid rgba(45,122,79,0.25);
+    color: var(--green-mid);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .start-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: var(--gold-light);
+    border: none;
+    border-radius: 14px;
+    padding: 18px 52px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 8px 28px rgba(26,74,46,0.45);
+    transition: all 0.2s ease;
+  }
+  .start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px rgba(26,74,46,0.55);
+    background: linear-gradient(135deg, var(--green-bright), var(--green-mid));
+  }
+
+  /* HUD */
+  .hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .timer-display {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    color: var(--gold-light);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 999px;
+    letter-spacing: 2px;
+    min-width: 88px;
+    text-align: center;
+  }
+  .timer-display.ticking { animation: timerPulse 1s ease-in-out infinite; }
+  @keyframes timerPulse {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.6; }
+  }
+  .question-counter { color: rgba(253,246,227,0.6); font-size: 0.88rem; font-style: italic; }
+  .progress-wrap {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-bright), var(--gold-light));
+    border-radius: 999px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* QUESTION */
+  .category-tag {
+    display: inline-block;
+    background: var(--green-mid);
+    color: var(--white);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.05rem, 3vw, 1.35rem);
+    color: var(--green-deep);
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 24px;
+  }
+
+  /* CHOICES */
+  .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  @media (max-width: 480px) { .choices { grid-template-columns: 1fr; } }
+  .choice-btn {
+    background: var(--white);
+    border: 2px solid rgba(45,122,79,0.18);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Lora', serif;
+    font-size: 0.92rem;
+    color: var(--green-deep);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.4;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .choice-btn .ltr {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    background: rgba(45,122,79,0.1);
+    color: var(--green-mid);
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--green-mid);
+    background: rgba(45,122,79,0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(45,122,79,0.13);
+  }
+  .choice-btn.correct { background: #e8f7ee; border-color: var(--green-bright); color: #1a4a2e; animation: correctPop 0.35s ease; }
+  .choice-btn.correct .ltr { background: var(--green-bright); color: white; }
+  .choice-btn.wrong { background: #fdecea; border-color: #e53935; color: #7f0000; opacity: 0.72; }
+  .choice-btn.wrong .ltr { background: #e53935; color: white; }
+  @keyframes correctPop {
+    0%  { transform: scale(1); }
+    40% { transform: scale(1.04); }
+    100%{ transform: scale(1); }
+  }
+  .choice-btn:disabled { cursor: default; }
+
+  /* FEEDBACK */
+  .feedback {
+    background: rgba(45,122,79,0.08);
+    border-left: 4px solid var(--green-mid);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 15px;
+    margin-bottom: 16px;
+    color: var(--green-deep);
+    font-size: 0.9rem;
+    line-height: 1.55;
+    display: none;
+    animation: slideIn 0.35s ease;
+  }
+  .feedback.wrong-fb { border-color: #e53935; background: rgba(229,57,53,0.06); }
+  .feedback.show { display: block; }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* NEXT BTN */
+  .next-btn {
+    display: none;
+    width: 100%;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-deep));
+    color: var(--gold-light);
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    box-shadow: 0 5px 20px rgba(26,74,46,0.35);
+  }
+  .next-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(26,74,46,0.5); background: linear-gradient(135deg, var(--green-bright), var(--green-mid)); }
+  .next-btn.show { display: block; animation: slideIn 0.35s ease; }
+
+  /* RESULTS */
+  #resultsScreen .card { text-align: center; padding: 48px 36px 42px; }
+  .results-emoji {
+    font-size: 4.5rem;
+    display: block;
+    margin-bottom: 10px;
+    animation: resultBounce 0.55s 0.2s cubic-bezier(0.4,0,0.2,1) both;
+  }
+  @keyframes resultBounce {
+    0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+    60%  { transform: scale(1.18) rotate(5deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  #resultsScreen h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--green-deep); margin-bottom: 26px; }
+  .results-stats { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+  .stat-box {
+    background: var(--green-deep);
+    border-radius: 16px;
+    padding: 16px 18px;
+    min-width: 110px;
+    flex: 1;
+    max-width: 160px;
+  }
+  .stat-box-penalty { background: #5c1a1a; }
+  .stat-box-total { background: #1a3a5c; }
+  .stat-box-total .stat-value { color: #7ec8f0; }
+  .stat-label { color: rgba(253,246,227,0.5); font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .stat-value { color: var(--gold-light); font-family: 'Playfair Display', serif; font-size: 2.4rem; font-weight: 900; line-height: 1; text-shadow: 0 2px 12px rgba(212,160,23,0.3); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+  .stat-sub { color: rgba(253,246,227,0.38); font-size: 0.72rem; margin-top: 4px; }
+  .verdict-box {
+    background: rgba(45,122,79,0.08);
+    border: 1px solid rgba(45,122,79,0.18);
+    border-radius: 14px;
+    padding: 18px 22px;
+    color: var(--green-deep);
+    font-style: italic;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 26px;
+  }
+  .play-again-btn {
+    background: linear-gradient(135deg, var(--gold), #b8860b);
+    color: var(--green-deep);
+    border: none;
+    border-radius: 12px;
+    padding: 15px 40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(212,160,23,0.4);
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+  }
+  .play-again-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(212,160,23,0.5); }
+
+  footer {
+    text-align: center;
+    color: rgba(253,246,227,0.28);
+    font-size: 0.78rem;
+    margin-top: 36px;
+    font-style: italic;
+    position: relative;
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="shamrocks-bg" id="shamrocksBg"></div>
+
+<div class="container">
+  <header>
+    <span class="header-clover">☘️</span>
+    <h1><span>Work Party</span>St. Patrick's Day Trivia</h1>
+  </header>
+
+  <!-- START SCREEN -->
+  <div id="startScreen" class="screen active">
+    <div class="card">
+      <p class="start-intro">Think you know your Irish history, folklore, and culture?<br>Answer all 20 questions as fast as you can — the timer starts when you do!<br><br>⚠️ <strong>Watch out:</strong> each wrong answer adds a <strong>5 second time penalty</strong> to your final time. Choose carefully!</p>
+      <div class="meta-chips">
+        <span class="chip">☘️ 20 Questions</span>
+        <span class="chip">⏱ Timed Challenge</span>
+        <span class="chip">🍀 Irish Trivia</span>
+      </div>
+      <button class="start-btn" onclick="startGame()">Start Trivia ▶</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" class="screen">
+    <div class="hud">
+      <div class="timer-display" id="timerDisplay">0:00</div>
+      <div class="question-counter">Question <span id="qNum">1</span> of 20</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="card">
+      <span class="category-tag" id="categoryTag"></span>
+      <p class="question-text" id="questionText"></p>
+      <div class="choices" id="choices"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question →</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="resultsScreen" class="screen">
+    <div class="card">
+      <span class="results-emoji" id="resultsEmoji">🍀</span>
+      <h2 id="resultsTitle">Well Done!</h2>
+      <div class="results-stats">
+        <div class="stat-box">
+          <div class="stat-label">Correct</div>
+          <div class="stat-value" id="finalScore">—</div>
+          <div class="stat-sub">out of 20</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Completion Time</div>
+          <div class="stat-value" id="finalTime">—</div>
+          <div class="stat-sub">min : sec</div>
+        </div>
+        <div class="stat-box stat-box-penalty">
+          <div class="stat-label">Time Penalty</div>
+          <div class="stat-value" id="finalPenalty">—</div>
+          <div class="stat-sub" id="penaltyDetail">escalating penalty</div>
+        </div>
+        <div class="stat-box stat-box-total">
+          <div class="stat-label">Final Time</div>
+          <div class="stat-value" id="finalTotal">—</div>
+          <div class="stat-sub">total time</div>
+        </div>
+      </div>
+      <div class="verdict-box" id="verdictBox"></div>
+      <button class="play-again-btn" onclick="resetGame()">☘️ Play Again</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>St. Patrick's Day Party Trivia · Good luck! 🍀</footer>
+
+<script>
+var questions = [
+  { q: "What color is traditionally associated with St. Patrick's Day?", choices: ["Blue", "Green", "Gold", "White"], answer: 1, cat: "Traditions", fact: "Green became dominant due to Ireland's nickname 'The Emerald Isle' and the green in the Irish flag. Blue was actually the original color associated with St. Patrick!" },
+  { q: "What is the capital city of Ireland?", choices: ["Cork", "Galway", "Dublin", "Limerick"], answer: 2, cat: "Geography", fact: "Dublin (Baile Atha Cliath in Irish) has been Ireland's capital since the 10th century and is home to about 1.2 million people." },
+  { q: "According to legend, what did St. Patrick drive out of Ireland?", choices: ["Wolves", "Snakes", "Bears", "Dragons"], answer: 1, cat: "Legend", fact: "Legend says St. Patrick banished all snakes from Ireland. In reality, Ireland never had snakes — the legend is likely symbolic of driving out paganism." },
+  { q: "What does a leprechaun traditionally guard at the end of a rainbow?", choices: ["A four-leaf clover", "A pot of gold", "A magic harp", "A golden shoe"], answer: 1, cat: "Folklore", fact: "Leprechauns are said to be cobblers who have hidden their gold coins at the end of rainbows. If caught, they must reveal the hiding spot!" },
+  { q: "The shamrock was used by St. Patrick to explain which concept?", choices: ["The seasons of Ireland", "The Holy Trinity", "The phases of the moon", "The cycle of life"], answer: 1, cat: "History", fact: "St. Patrick used the three-leaf shamrock to explain the Christian concept of the Holy Trinity — Father, Son, and Holy Spirit — to the Irish people." },
+  { q: "What is the traditional Irish stew typically made from?", choices: ["Beef and carrots", "Lamb, potatoes, and onions", "Pork and cabbage", "Chicken and leeks"], answer: 1, cat: "Food & Drink", fact: "Traditional Irish stew uses lamb (or mutton), potatoes, onions, and parsley. It was a staple dish for Irish peasants for centuries." },
+  { q: "In which US city is the river dyed green for St. Patrick's Day?", choices: ["New York", "Boston", "Chicago", "San Francisco"], answer: 2, cat: "Celebrations", fact: "Chicago has dyed the Chicago River green since 1962! The tradition was started by a local plumber's union and now uses an eco-friendly vegetable-based dye." },
+  { q: "What is the Irish word for Ireland?", choices: ["Eire", "Erin", "Hibernia", "Celtic"], answer: 0, cat: "Language", fact: "Eire is the Irish language (Gaelic) name for Ireland. The country's official name is 'Eire' in Irish and 'Ireland' in English." },
+  { q: "How many leaves does a lucky clover have?", choices: ["3", "4", "5", "7"], answer: 1, cat: "Traditions", fact: "A four-leaf clover is considered lucky — each leaf represents faith, hope, love, and luck. Finding one is rare; about 1 in every 5,000 clovers has four leaves." },
+  { q: "What is Guinness, Ireland's most famous export?", choices: ["A whiskey", "A stout beer", "A wine", "A cider"], answer: 1, cat: "Food & Drink", fact: "Guinness is a dark Irish stout brewed in Dublin since 1759. It's one of the most successful beer brands in the world, sold in over 150 countries." },
+  { q: "The phrase 'Luck of the Irish' originally referred to what?", choices: ["Good fortune in farming", "Success of Irish miners during the Gold Rush", "Lucky escapes in war", "Winning at card games"], answer: 1, cat: "History", fact: "The phrase originally referred to the success of many Irish and Irish-American miners during the Gold and Silver Rushes of the 1800s — but it was often used sarcastically!" },
+  { q: "Which famous landmark is known as the 'Blarney Stone'?", choices: ["A stone in a Dublin park", "A stone in Blarney Castle, Cork", "A stone in Killarney National Park", "A stone on Skellig Michael"], answer: 1, cat: "Geography", fact: "The Blarney Stone is set in the battlements of Blarney Castle in County Cork. Legend says kissing it gives you the 'gift of the gab' — great eloquence!" },
+  { q: "What instrument is the national symbol of Ireland?", choices: ["Bagpipe", "Violin", "Harp", "Tin whistle"], answer: 2, cat: "Culture", fact: "The harp is Ireland's national symbol and appears on the Irish coat of arms, euro coins, and the famous Guinness label. Ireland is the only country with a musical instrument as its national symbol." },
+  { q: "St. Patrick's Day is officially observed on what date?", choices: ["March 14", "March 17", "March 21", "April 1"], answer: 1, cat: "History", fact: "March 17 marks the traditionally accepted date of St. Patrick's death in 461 AD. It has been a public holiday in Ireland since the early 20th century." },
+  { q: "What does 'Slainte' mean in Irish?", choices: ["Good luck", "Hello", "Cheers / To your health", "Thank you"], answer: 2, cat: "Language", fact: "'Slainte' (pronounced SLAWN-cha) literally means 'health' and is the traditional Irish toast — equivalent to saying 'Cheers!' when raising a glass." },
+  { q: "Which of these is a real county in Ireland?", choices: ["County Shamrock", "County Kerry", "County Clover", "County Leprechaun"], answer: 1, cat: "Geography", fact: "County Kerry is a beautiful coastal county in southwest Ireland, famous for the Ring of Kerry scenic drive, Killarney National Park, and the Dingle Peninsula." },
+  { q: "What mythical Irish creature is said to grant 3 wishes if caught?", choices: ["Banshee", "Selkie", "Leprechaun", "Pooka"], answer: 2, cat: "Folklore", fact: "In Irish folklore, if you catch a leprechaun, he must grant you three wishes or reveal the location of his hidden gold in exchange for his freedom." },
+  { q: "What is a 'ceili' in Irish culture?", choices: ["A type of bread", "A traditional social gathering with dancing", "A funeral ceremony", "A style of painting"], answer: 1, cat: "Culture", fact: "A ceili (pronounced KAY-lee) is a traditional Irish social event featuring folk music and dancing. Ceili dances are group dances performed at parties and festivals." },
+  { q: "Which famous ocean liner set sail from Ireland before sinking?", choices: ["The Lusitania", "The Titanic", "The Britannic", "The Olympic"], answer: 1, cat: "History", fact: "The RMS Titanic departed from Queenstown (now Cobh), Ireland on April 11, 1912 — its last port of call before sinking on April 15, 1912." },
+  { q: "What does the Irish phrase 'Craic' mean?", choices: ["A type of bread", "A traditional sport", "Fun, enjoyment, and good times", "A musical instrument"], answer: 2, cat: "Language", fact: "'Craic' is a quintessentially Irish word meaning fun, entertainment, and lively conversation. 'What's the craic?' is a common Irish greeting meaning 'What's going on / How are you?'" }
+];
+
+var current = 0;
+var score = 0;
+var answered = false;
+var timerInterval = null;
+var elapsedSeconds = 0;
+var penaltySeconds = 0;
+  wrongCount = 0;
+var wrongCount = 0;
+var shuffledQuestions = [];
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+// Floating shamrocks
+var bg = document.getElementById('shamrocksBg');
+for (var i = 0; i < 18; i++) {
+  var s = document.createElement('span');
+  s.className = 'shamrock-float';
+  s.textContent = Math.random() > 0.5 ? '☘️' : '🍀';
+  s.style.left = (Math.random() * 100) + 'vw';
+  s.style.animationDuration = (18 + Math.random() * 20) + 's';
+  s.style.animationDelay = (-Math.random() * 30) + 's';
+  s.style.fontSize = (1.2 + Math.random() * 2) + 'rem';
+  bg.appendChild(s);
+}
+
+function formatTime(secs) {
+  var m = Math.floor(secs / 60);
+  var s = secs % 60;
+  return m + ':' + (s < 10 ? '0' : '') + s;
+}
+
+function startTimer() {
+  elapsedSeconds = 0;
+  document.getElementById('timerDisplay').textContent = '0:00';
+  document.getElementById('timerDisplay').classList.add('ticking');
+  timerInterval = setInterval(function() {
+    elapsedSeconds++;
+    document.getElementById('timerDisplay').textContent = formatTime(elapsedSeconds);
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  document.getElementById('timerDisplay').classList.remove('ticking');
+}
+
+function showScreen(id) {
+  var screens = document.querySelectorAll('.screen');
+  for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function startGame() {
+  current = 0;
+  score = 0;
+  answered = false;
+  penaltySeconds = 0;
+  wrongCount = 0;
+  shuffledQuestions = shuffle(questions);
+  showScreen('quizScreen');
+  loadQuestion();
+  startTimer();
+}
+
+function loadQuestion() {
+  answered = false;
+  var q = shuffledQuestions[current];
+  var letters = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('categoryTag').textContent = q.cat;
+  document.getElementById('questionText').textContent = q.q;
+  document.getElementById('qNum').textContent = current + 1;
+  document.getElementById('progressFill').style.width = ((current / questions.length) * 100) + '%';
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').className = 'next-btn';
+
+  var choicesEl = document.getElementById('choices');
+  choicesEl.innerHTML = '';
+  for (var i = 0; i < q.choices.length; i++) {
+    var btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = '<span class="ltr">' + letters[i] + '</span><span>' + q.choices[i] + '</span>';
+    btn.onclick = (function(idx, b) {
+      return function() { selectAnswer(idx, b); };
+    })(i, btn);
+    choicesEl.appendChild(btn);
+  }
+}
+
+function selectAnswer(idx, btn) {
+  if (answered) return;
+  answered = true;
+
+  var q = shuffledQuestions[current];
+  var allBtns = document.querySelectorAll('.choice-btn');
+  var allLtrs = document.querySelectorAll('.choice-btn .ltr');
+
+  for (var i = 0; i < allBtns.length; i++) allBtns[i].disabled = true;
+
+  var feedback = document.getElementById('feedback');
+
+  if (idx === q.answer) {
+    score++;
+    btn.classList.add('correct');
+    allLtrs[idx].textContent = '✓';
+    feedback.className = 'feedback show';
+    feedback.innerHTML = '✅ <strong>Correct!</strong> ' + q.fact;
+  } else {
+    btn.classList.add('wrong');
+    allLtrs[idx].textContent = '✗';
+    allBtns[q.answer].classList.add('correct');
+    allLtrs[q.answer].textContent = '✓';
+    wrongCount++;
+    penaltySeconds += wrongCount * 5;
+    feedback.className = 'feedback wrong-fb show';
+    feedback.innerHTML = '❌ <strong>Not quite!</strong> The answer was <strong>' + q.choices[q.answer] + '</strong>. ' + q.fact;
+  }
+
+  var nextBtn = document.getElementById('nextBtn');
+  nextBtn.textContent = (current === shuffledQuestions.length - 1) ? 'See My Results →' : 'Next Question →';
+  nextBtn.className = 'next-btn show';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= shuffledQuestions.length) {
+    stopTimer();
+    showResults();
+  } else {
+    loadQuestion();
+  }
+}
+
+function showResults() {
+  document.getElementById('progressFill').style.width = '100%';
+  showScreen('resultsScreen');
+
+  var pct = score / questions.length;
+  var emoji, title, verdict;
+
+  if (pct === 1) {
+    emoji = '🏆'; title = 'Perfect Score!';
+    verdict = 'You found every pot of gold! A true Irish legend. Share your score and see if anyone can beat your time!';
+  } else if (pct >= 0.8) {
+    emoji = '🍀'; title = 'Brilliantly Done!';
+    verdict = 'The luck of the Irish was truly with you today. St. Patrick himself would raise a glass in your honour!';
+  } else if (pct >= 0.6) {
+    emoji = '☘️'; title = 'Well Played!';
+    verdict = "A solid showing! You've got enough Irish in you to enjoy a proper Guinness. Can you beat your time?";
+  } else if (pct >= 0.4) {
+    emoji = '🌈'; title = 'Not Bad!';
+    verdict = 'You found the rainbow, but the pot of gold is still hiding. Brush up on your Irish lore and try again!';
+  } else {
+    emoji = '🪙'; title = 'Better Luck Next Time!';
+    verdict = 'The leprechaun got away this time! Maybe a trip to Ireland will improve your score next year.';
+  }
+
+  document.getElementById('resultsEmoji').textContent = emoji;
+  document.getElementById('resultsTitle').textContent = title;
+  var totalTime = elapsedSeconds + penaltySeconds;
+  document.getElementById('finalScore').textContent = score + '/20';
+  document.getElementById('finalTime').textContent = formatTime(elapsedSeconds);
+  document.getElementById('finalPenalty').textContent = '+' + formatTime(penaltySeconds);
+  document.getElementById('penaltyDetail').textContent = wrongCount + ' wrong answer' + (wrongCount !== 1 ? 's' : '');
+  document.getElementById('finalTotal').textContent = formatTime(totalTime);
+  document.getElementById('verdictBox').textContent = verdict;
+}
+
+function resetGame() {
+  showScreen('startScreen');
+}
+</script>
+</body>
+</html>
